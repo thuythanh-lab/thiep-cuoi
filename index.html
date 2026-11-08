@@ -7,12 +7,13 @@
 <meta name="description" content="Thiệp cưới Minh & Thuỷ • 24.12.2026 • Seasons Hà Nội">
 <title>Minh & Thuỷ — 24.12.2026</title>
 <!-- Link preview for Zalo / Messenger / Facebook. Crawlers need an ABSOLUTE https address:
-     upload og-image.jpg next to this file, then replace https://YOUR-SITE/ below with the real address. -->
+     site: https://thuythanh-lab.github.io/thiep-cuoi/ -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="vi_VN">
 <meta property="og:title" content="Thiệp cưới Minh & Thuỷ · 24.12.2026">
 <meta property="og:description" content="Trân trọng kính mời quý khách đến dự tiệc cưới lúc 11:00, Thứ Năm 24.12.2026 tại Seasons Hanoi, 9 Đào Duy Anh.">
-<meta property="og:image" content="https://YOUR-SITE/og-image.jpg">
+<meta property="og:url" content="https://thuythanh-lab.github.io/thiep-cuoi/">
+<meta property="og:image" content="https://thuythanh-lab.github.io/thiep-cuoi/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -534,6 +535,13 @@ textarea{font-size:16px}
 .thank-bottom{gap:9px;flex-wrap:wrap}
 .thank-bottom .thank-action:not(.primary){min-height:40px;padding:0 16px;gap:6px;width:auto}
 
+/* V33 — simplified parents' page */
+.admin-link-row{display:flex;gap:8px;align-items:center;margin:4px 0 12px}
+.admin-link-row .admin-link{margin-top:0;min-height:46px;font-size:14px;color:rgba(255,245,222,.85);text-overflow:ellipsis}
+.admin-link-row .admin-btn{flex:0 0 auto}
+.admin-card #adminMessage{font-size:16px;line-height:1.55;min-height:330px}
+#adminResult:not([hidden]){display:flex;flex-direction:column;gap:16px}
+
 </style>
 </head>
 <body>
@@ -683,43 +691,38 @@ textarea{font-size:16px}
   <div class="page-bg"></div><div class="shade inner-shade"></div>
   <div class="admin-inner">
     <header class="admin-head">
-      <p class="admin-for">Dành cho bố mẹ</p>
-      <h1>Tạo thiệp mời riêng</h1>
-      <p>Mỗi khách nhận một đường dẫn có tên của mình. Nếu khách chuyển thiệp cho người khác, người nhận sẽ thấy thiệp chung và phải tự điền tên khi xác nhận.</p>
+      <h1>Tạo thiệp mời</h1>
+      <p>Điền tên khách, bấm tạo, rồi gửi qua Zalo.</p>
     </header>
     <p class="admin-warning" id="adminFileWarning" hidden>Trang này đang mở từ máy tính (file). Hãy mở bằng địa chỉ web của thiệp, nếu không đường dẫn tạo ra sẽ không gửi cho khách được.</p>
     <div class="admin-card">
-      <label class="admin-label" for="adminNames">Tên khách mời</label>
-      <p class="field-hint" style="margin:4px 0 0">Viết đúng như muốn hiện trên thiệp. Nhiều khách thì mỗi dòng một tên.</p>
-      <textarea id="adminNames" rows="3" maxlength="4000" placeholder="Gia đình chú Hùng&#10;Cô Lan và các con"></textarea>
-      <fieldset class="admin-side">
-        <legend>Khách của</legend>
-        <div class="admin-side-options">
-          <label><input type="radio" name="adminSide" value="Nhà trai"><span>Nhà trai</span></label>
-          <label><input type="radio" name="adminSide" value="Nhà gái"><span>Nhà gái</span></label>
-          <label><input type="radio" name="adminSide" value="" checked><span>Không ghi</span></label>
-        </div>
-      </fieldset>
-      <button type="button" class="filled-primary" id="adminCreate">Tạo đường dẫn</button>
+      <label class="admin-label" for="adminName">Tên khách</label>
+      <input id="adminName" class="form-input" type="text" maxlength="90" autocomplete="off" enterkeyhint="done" placeholder="VD: anh chị Hùng">
+      <p class="field-hint">Tên này hiện trên thiệp và trong tin nhắn.</p>
+      <button type="button" class="filled-primary" id="adminCreate" style="margin-top:14px">Tạo đường dẫn</button>
       <p class="admin-msg" id="adminMsg" role="status"></p>
     </div>
-    <div class="admin-card">
-      <h2>Đường dẫn đã tạo</h2>
-      <p>Bấm “Gửi qua Zalo” để mở danh bạ trên điện thoại, hoặc “Sao chép tin nhắn” rồi dán vào Zalo. Danh sách chỉ lưu trên máy này.</p>
-      <ul class="admin-list" id="adminList"></ul>
-      <p class="admin-empty" id="adminEmpty">Chưa có đường dẫn nào. Nhập tên khách ở trên để bắt đầu.</p>
-      <div class="admin-actions" style="margin-top:12px"><button type="button" class="admin-btn quiet" id="adminClear" hidden>Xoá cả danh sách</button></div>
-    </div>
-    <div class="admin-card">
-      <h2>Thiệp chung</h2>
-      <p>Dùng khi đăng vào nhóm hoặc gửi nhiều người một lúc. Khách sẽ được yêu cầu điền tên khi xác nhận tham dự.</p>
-      <div class="admin-actions"><button type="button" class="admin-btn primary" id="adminGenericCopy">Sao chép tin nhắn</button><button type="button" class="admin-btn" id="adminGenericShare">Gửi qua Zalo</button></div>
-    </div>
-    <div class="admin-card">
-      <h2>Kiểm tra Google Sheet</h2>
-      <p>Gửi một phản hồi thử tên “KIỂM TRA – xoá dòng này”. Sau đó mở Google Sheet xem dòng đó có hiện ra không, có đủ dấu tiếng Việt không.</p>
-      <div class="admin-actions"><button type="button" class="admin-btn" id="adminTest">Gửi phản hồi thử</button></div>
-      <p class="admin-msg" id="adminTestMsg" role="status"></p>
+    <div id="adminResult" hidden>
+      <div class="admin-card">
+        <h2>Đường dẫn thiệp</h2>
+        <div class="admin-link-row">
+          <input id="adminLink" class="form-input admin-link" type="text" readonly aria-label="Đường dẫn thiệp">
+          <button type="button" class="admin-btn" id="adminCopyLink">Sao chép</button>
+        </div>
+        <div class="admin-actions">
+          <button type="button" class="admin-btn primary" id="adminShareLink">Gửi qua Zalo</button>
+          <a class="admin-btn" id="adminPreview" href="#" target="_blank" rel="noopener">Xem trước thiệp</a>
+        </div>
+      </div>
+      <div class="admin-card">
+        <h2>Tin nhắn gợi ý</h2>
+        <p>Có thể sửa trực tiếp trước khi gửi.</p>
+        <textarea id="adminMessage" rows="9" aria-label="Tin nhắn gợi ý"></textarea>
+        <div class="admin-actions" style="margin-top:12px">
+          <button type="button" class="admin-btn primary" id="adminShareMsg">Gửi tin nhắn qua Zalo</button>
+          <button type="button" class="admin-btn" id="adminCopyMsg">Sao chép tin nhắn</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1293,67 +1296,40 @@ if(Number.isInteger(previewPage)&&previewPage>=1&&previewPage<=4&&previewPage!==
 // ===================== V31 ADMIN (?admin) =====================
 function initAdmin(){
   const $=id=>document.getElementById(id);
-  const STORE='minh-thuy-admin-links';
   if(location.protocol==='file:')$('adminFileWarning').hidden=false;
-  const load=()=>{try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch(_){return []}};
-  const save=list=>{try{localStorage.setItem(STORE,JSON.stringify(list))}catch(_){}};
-  let links=load();
-  const linkFor=(name,by)=>genericUrl()+'?i='+b64urlEncode(JSON.stringify(by?{n:name,b:by}:{n:name}));
-  const textFor=name=>`Trân trọng kính mời ${name} đến dự tiệc cưới của Minh & Thuỷ lúc 11:00, Thứ Năm 24.12.2026 tại Seasons Hanoi, 9 Đào Duy Anh, Hà Nội.`;
-  const genericText='Trân trọng kính mời quý khách đến dự tiệc cưới của Minh & Thuỷ lúc 11:00, Thứ Năm 24.12.2026 tại Seasons Hanoi, 9 Đào Duy Anh, Hà Nội.';
-  async function share(text,url){
-    try{if(navigator.share){await navigator.share({title:'Thiệp cưới Minh & Thuỷ',text,url});return}}
+  const linkFor=name=>genericUrl()+'?i='+b64urlEncode(JSON.stringify({n:name}));
+  const messageFor=(name,url)=>`Chào ${name}
+Gia đình mình có tin vui, cháu Minh và Thủy nhà mình sắp lập gia đình. Lễ thành hôn của các cháu sẽ được tổ chức vào lúc 11h ngày 24/12 (tức ngày 16/11 âm lịch) tại Seasons số 9 Đào Duy Anh.
+Gia đình mình xin phép gửi hình ảnh thiệp cưới trước. Rất mong ${name} sắp xếp thời gian về chung vui và chúc phúc cho các cháu ạ. Gia đình xin cảm ơn rất nhiều!
+
+Thiệp cưới: ${url}`;
+  // Zalo receives the whole message; the link inside it makes the photo preview.
+  async function sendViaZalo(text){
+    try{if(navigator.share){await navigator.share({text});return}}
     catch(e){if(e.name==='AbortError')return}
-    if(await copyText(text+'\n'+url))toast('Máy này không mở được Zalo trực tiếp. Đã sao chép tin nhắn, hãy dán vào Zalo.');
+    toast(await copyText(text)?'Đã sao chép. Mở Zalo và dán vào tin nhắn.':'Không sao chép được. Hãy bấm giữ để sao chép.');
   }
-  async function copyMsg(text,url){
-    toast(await copyText(text+'\nXem thiệp: '+url)?'Đã sao chép. Mở Zalo và dán vào tin nhắn.':'Không sao chép được. Hãy bấm giữ đường dẫn để sao chép.');
+  async function copyAndTell(text,what){
+    toast(await copyText(text)?`Đã sao chép ${what}. Mở Zalo và dán vào tin nhắn.`:'Không sao chép được. Hãy bấm giữ để sao chép.');
   }
-  function button(label,cls,onClick){const b=document.createElement('button');b.type='button';b.className='admin-btn'+(cls?' '+cls:'');b.textContent=label;b.addEventListener('click',onClick);return b}
-  function render(){
-    const ul=$('adminList');ul.replaceChildren();
-    links.forEach((item,idx)=>{
-      const url=linkFor(item.name,item.by);
-      const li=document.createElement('li');li.className='admin-item';
-      const top=document.createElement('div');top.className='admin-item-top';
-      const nm=document.createElement('div');nm.className='admin-item-name';nm.textContent=item.name;top.appendChild(nm);
-      if(item.by){const sd=document.createElement('div');sd.className='admin-item-side';sd.textContent=item.by;top.appendChild(sd)}
-      const u=document.createElement('div');u.className='admin-item-url';u.textContent=url;
-      const act=document.createElement('div');act.className='admin-actions';
-      act.append(
-        button('Gửi qua Zalo','primary',()=>share(textFor(item.name),url)),
-        button('Sao chép tin nhắn','',()=>copyMsg(textFor(item.name),url))
-      );
-      const view=document.createElement('a');view.className='admin-btn';view.href=url;view.target='_blank';view.rel='noopener';view.textContent='Xem thử';act.appendChild(view);
-      act.appendChild(button('Xoá','quiet',()=>{links.splice(idx,1);save(links);render()}));
-      li.append(top,u,act);ul.appendChild(li);
-    });
-    $('adminEmpty').hidden=links.length>0;$('adminClear').hidden=links.length===0;
+  function create(){
+    const name=$('adminName').value.trim().replace(/\s+/g,' ').slice(0,90);
+    if(!name){$('adminMsg').textContent='Hãy điền tên khách trước.';$('adminName').focus();return}
+    const url=linkFor(name);
+    $('adminLink').value=url;$('adminPreview').href=url;
+    $('adminMessage').value=messageFor(name,url);
+    $('adminMsg').textContent=`Đã tạo thiệp cho ${name}.`;
+    $('adminResult').hidden=false;
+    $('adminResult').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'});
   }
-  $('adminCreate').addEventListener('click',()=>{
-    const by=document.querySelector('input[name="adminSide"]:checked')?.value||'';
-    const names=[...new Set($('adminNames').value.split(/\n+/).map(n=>n.trim().replace(/\s+/g,' ').slice(0,90)).filter(Boolean))];
-    if(!names.length){$('adminMsg').textContent='Hãy nhập ít nhất một tên khách.';$('adminNames').focus();return}
-    const fresh=names.map(name=>({name,by,created:Date.now()}));
-    links=[...fresh,...links.filter(l=>!fresh.some(f=>f.name===l.name&&f.by===l.by))];
-    save(links);render();$('adminNames').value='';
-    $('adminMsg').textContent=names.length===1?`Đã tạo đường dẫn cho ${names[0]}. Gửi cho khách ở danh sách bên dưới.`:`Đã tạo ${names.length} đường dẫn. Gửi cho từng khách ở danh sách bên dưới.`;
-  });
-  $('adminClear').addEventListener('click',()=>{if(confirm('Xoá cả danh sách trên máy này? Các đường dẫn đã gửi cho khách vẫn dùng được.')){links=[];save(links);render()}});
-  $('adminGenericCopy').addEventListener('click',()=>copyMsg(genericText,genericUrl()));
-  $('adminGenericShare').addEventListener('click',()=>share(genericText,genericUrl()));
-  $('adminTest').addEventListener('click',async e=>{
-    const btn=e.currentTarget,out=$('adminTestMsg');btn.disabled=true;out.textContent='Đang gửi...';
-    const name='KIỂM TRA – xoá dòng này';
-    try{
-      const r=await sendRsvp({rsvpId:newId(),guest:name,guestName:name,name,invitedName:'',invitedBy:'',linkType:'test',attendance:'Sẽ tham dự',status:'yes',attending:true,guestCount:null,count:null,guests:null,message:'Thử tiếng Việt: Chúc mừng hạnh phúc trăm năm',note:'Thử tiếng Việt: Chúc mừng hạnh phúc trăm năm',timestamp:new Date().toISOString(),source:'Minh-Thuy-wedding-web-v31',test:true});
-      out.textContent=r==='confirmed'?'Google Sheet đã xác nhận nhận được. Mở Sheet xem dòng thử rồi xoá đi.'
-        :r==='demo'?'Chưa có địa chỉ Apps Script trong thiệp.'
-        :'Đã gửi đi nhưng Google Sheet không trả lời xác nhận. Mở Sheet kiểm tra xem dòng thử đã có chưa.';
-    }catch(err){out.textContent='Không gửi được ('+err.message+'). Kiểm tra mạng, hoặc Apps Script chưa cho phép “Bất kỳ ai” truy cập.'}
-    finally{btn.disabled=false}
-  });
-  render();
+  $('adminCreate').addEventListener('click',create);
+  $('adminName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();create()}});
+  $('adminName').addEventListener('input',()=>{$('adminMsg').textContent=''});
+  $('adminLink').addEventListener('focus',e=>e.target.select());
+  $('adminCopyLink').addEventListener('click',()=>copyAndTell($('adminLink').value,'đường dẫn'));
+  $('adminShareLink').addEventListener('click',()=>sendViaZalo($('adminLink').value));
+  $('adminShareMsg').addEventListener('click',()=>sendViaZalo($('adminMessage').value));
+  $('adminCopyMsg').addEventListener('click',()=>copyAndTell($('adminMessage').value,'tin nhắn'));
 }
 if(isAdmin){pages.forEach(p=>{p.inert=true;p.setAttribute('aria-hidden','true')});initAdmin();}
 
