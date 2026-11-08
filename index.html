@@ -787,6 +787,14 @@ textarea{font-size:16px}
   background:transparent!important;background-image:none!important;color:#F7F0DF!important;border:1px solid rgba(247,240,223,.55)!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .page:not(.page-cover) .filled-primary,.page:not(.page-cover) .thank-action,.choice-grid .pill-button{min-height:52px!important;border-radius:999px!important}
 @media(max-height:700px){.page:not(.page-cover) .filled-primary,.page:not(.page-cover) .thank-action,.choice-grid .pill-button{min-height:46px!important}}
+
+/* V52 — page 3 title styled exactly like page 2's “TRÂN TRỌNG KÍNH MỜI” */
+.inner-heading h1.rsvp-eyebrow{font-family:var(--font-body)!important;font-size:14px!important;font-weight:500!important;font-style:normal!important;
+  text-transform:uppercase!important;letter-spacing:.14em!important;padding-left:.14em!important;line-height:1.35!important;color:rgb(231,202,147)!important}
+/* Page 4 thank-you words in the cover's invitation lettering: Cormorant Garamond 500, spaced capitals */
+.thank-content .thank-message{font-family:var(--font-display)!important;font-weight:500!important;font-style:normal!important;
+  text-transform:uppercase!important;letter-spacing:.15em!important;font-size:clamp(16px,4.6vw,18px)!important;line-height:1.5!important}
+@media(max-height:620px){.thank-content .thank-message{font-size:15px!important}}
 </style>
 <script>
 (function(){
@@ -1741,7 +1749,7 @@ const pageEls = [...document.querySelectorAll('.page')];
    tilt: 1.4 = seen from above, 0.5 = seen from the side. open: 0 wings folded … 1 spread. rest: 1 = perched, no drifting. */
 const POSES = [
   { x: 0.52, y: 0.17, s: 0.16, heading: 0.45, tilt: 1.2,  open: 0.9,  rest: 0 },  // cover: beside the couple
-  { anchor: '#venueWrap', ax: 0.88, ay: 0.0, s: 0.1, heading: 3.0, tilt: 0.55, open: 0.15, rest: 1 },  // details: perched on the top edge of the venue card
+  { anchor: '#detailsRsvp', ax: 0.86, ay: 0.0, offsetY: -30, s: 0.1, heading: 3.0, tilt: 0.55, open: 0.15, rest: 1 },  // details: just above the “Xác nhận tham dự” button, on the dark background
   { anchor: '[data-attend="yes"]', ax: 0.1, ay: 0.02, s: 0.1, heading: 0.12, tilt: 0.55, open: 0.15, rest: 1 },  // RSVP: perched on “Sẽ tham dự”
   { anchor: '#memoryDisc', ax: 0.88, ay: 0.52, offsetY: 0, s: 0.095, heading: 2.6, tilt: 1.05, open: 0.7, rest: 0 } // thank you: hover above the photo disc
 ];
