@@ -632,16 +632,18 @@ textarea{font-size:16px}
   <div class="inner">
     <div class="top-bar"><button class="circle-btn" data-goto="1" aria-label="Trở lại thông tin buổi lễ"><svg class="icon"><use href="#i-back"/></svg></button><span class="top-kicker">RSVP · 03 / 04</span><button type="button" class="vinyl-btn" aria-pressed="false" aria-label="Bật nhạc nền"><span class="vinyl-disc" aria-hidden="true"></span></button></div>
     <header class="inner-heading rsvp-heading"><div class="eyebrow">We look forward to seeing you</div><h1>Xác nhận tham dự</h1></header>
-    <p class="rsvp-sub">Kính mong quý khách vui lòng xác nhận để gia đình chúng tôi chuẩn bị đón tiếp chu đáo.</p>
+    <p class="rsvp-sub" id="rsvpSub">Kính mong quý khách vui lòng xác nhận để gia đình chúng tôi chuẩn bị đón tiếp chu đáo.</p>
     <div class="choice-grid" role="group" aria-label="Lựa chọn tham dự"><button type="button" class="pill-button" data-attend="yes" aria-pressed="false"><svg class="icon"><use href="#i-check"/></svg>Sẽ tham dự</button><button type="button" class="pill-button" data-attend="no" aria-pressed="false"><svg class="icon"><use href="#i-close"/></svg>Không tham dự</button></div>
     <div class="rsvp-scroll" id="rsvpScroll">
-      <div class="rsvp-placeholder" id="rsvpPlaceholder"><svg class="icon"><use href="#i-heart"/></svg><p>Hẹn gặp quý khách trong ngày vui của gia đình chúng tôi.</p></div>
+      <div class="rsvp-placeholder" id="rsvpPlaceholder"><svg class="icon"><use href="#i-heart"/></svg><p id="rsvpPlaceholderText">Hẹn gặp quý khách trong ngày vui của gia đình chúng tôi.</p></div>
       <div class="form-expander" id="formExpander"><div class="form-overflow">
         <form class="form-card glass-card" id="rsvpForm" novalidate>
+          <div id="rsvpNameBlock">
           <label class="form-label" for="rsvpName">Tên của quý khách</label>
           <input id="rsvpName" class="form-input" type="text" autocomplete="name" maxlength="90" placeholder="VD: Gia đình chú Hùng" enterkeyhint="next" aria-describedby="rsvpNameHint">
           <p class="field-hint" id="rsvpNameHint">Để gia đình biết ai đã hồi đáp.</p>
           <div class="form-divider"></div>
+          </div>
           <label class="form-label" for="rsvpNote">Lời nhắn gửi đến Minh & Thuỷ <span class="optional">(không bắt buộc)</span></label>
           <textarea id="rsvpNote" rows="3" maxlength="500" placeholder="Gửi lời chúc của quý khách..."></textarea>
           <div class="form-actions"><button class="filled-primary form-primary" type="submit" id="submitRsvp">Gửi xác nhận <svg class="icon"><use href="#i-arrow"/></svg></button><p class="form-message" id="formMessage" role="status"></p></div>
@@ -1074,8 +1076,17 @@ document.querySelectorAll('[data-attend]').forEach(el=>el.addEventListener('clic
 const form=document.getElementById('rsvpForm');
 const nameInput=document.getElementById('rsvpName');
 const nameHint=document.getElementById('rsvpNameHint');
-if(guestName){nameInput.value=guestName;nameHint.textContent='Quý khách có thể sửa nếu tên chưa đúng.';}
-nameInput.addEventListener('input',()=>{nameInput.removeAttribute('aria-invalid');nameHint.style.color='';nameHint.textContent=guestName?'Quý khách có thể sửa nếu tên chưa đúng.':'Để gia đình biết ai đã hồi đáp.';document.getElementById('formMessage').textContent=''});
+// V34: on a personal link, pages 3 and 4 speak to the guest by name and the name is not asked again.
+const who=guestName||'quý khách';
+if(guestName){
+  nameInput.value=guestName;
+  document.getElementById('rsvpNameBlock').hidden=true;
+  document.getElementById('rsvpSub').textContent=`Kính mong ${who} vui lòng xác nhận để gia đình chúng tôi chuẩn bị đón tiếp chu đáo.`;
+  document.getElementById('rsvpPlaceholderText').textContent=`Hẹn gặp ${who} trong ngày vui của gia đình chúng tôi.`;
+  document.getElementById('rsvpNote').placeholder=`Gửi lời chúc của ${who}...`;
+  document.getElementById('thankMessage').textContent=`Gia đình chúng tôi xin chân thành cảm ơn ${who} đã dành thời gian cùng chia sẻ niềm vui trong ngày đặc biệt này.`;
+}
+nameInput.addEventListener('input',()=>{nameInput.removeAttribute('aria-invalid');nameHint.style.color='';nameHint.textContent='Để gia đình biết ai đã hồi đáp.';document.getElementById('formMessage').textContent=''});
 const newId=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
 let pendingRsvpId=null;
 // Returns 'confirmed' (the Sheet answered OK), 'sent' (delivered, no readable answer) or 'demo'.
@@ -1103,7 +1114,7 @@ async function sendRsvp(payload){
 form.addEventListener('submit',async e=>{
   e.preventDefault();if(!attending){toast('Vui lòng chọn tham dự hoặc không tham dự.');return}
   const submit=document.getElementById('submitRsvp'),message=document.getElementById('formMessage');
-  const name=nameInput.value.trim().replace(/\s+/g,' ');
+  const name=guestName||nameInput.value.trim().replace(/\s+/g,' ');
   if(!name){
     nameInput.setAttribute('aria-invalid','true');
     message.textContent='Vui lòng nhập tên của quý khách để gia đình biết ai đã hồi đáp.';
@@ -1128,12 +1139,12 @@ form.addEventListener('submit',async e=>{
     pendingRsvpId=null;
     try{localStorage.setItem('minh-thuy-rsvp',JSON.stringify({...payload,result}))}catch(_){}
     document.getElementById('thankMessage').textContent=attending==='yes'
-      ?'Gia đình chúng tôi xin cảm ơn quý khách đã xác nhận tham dự. Rất mong được đón tiếp quý khách trong ngày vui của Minh & Thuỷ.'
-      :'Gia đình chúng tôi cảm ơn lời hồi đáp của quý khách. Xin gửi đến quý khách những lời chúc tốt đẹp nhất.';
+      ?`Gia đình chúng tôi xin cảm ơn ${who} đã xác nhận tham dự. Rất mong được đón tiếp ${who} trong ngày vui của Minh & Thuỷ.`
+      :`Gia đình chúng tôi cảm ơn lời hồi đáp của ${who}. Xin gửi đến ${who} những lời chúc tốt đẹp nhất.`;
     switchPage(3,submit);
     if(result==='demo')toast('Đây là bản demo: phản hồi chỉ được lưu trên thiết bị này.');
-    else if(result==='confirmed')toast('Cảm ơn quý khách! Gia đình đã nhận được hồi đáp.');
-    else toast('Cảm ơn quý khách! Hồi đáp đã được gửi đi.');
+    else if(result==='confirmed')toast(`Cảm ơn ${who}! Gia đình đã nhận được hồi đáp.`);
+    else toast(`Cảm ơn ${who}! Hồi đáp đã được gửi đi.`);
   }catch(err){
     message.textContent=navigator.onLine===false
       ?'Điện thoại đang mất mạng. Vui lòng bật mạng rồi bấm gửi lại.'
@@ -1273,9 +1284,16 @@ document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===e
 // V31: guests always share the GENERIC invitation, never their own personal link.
 async function shareInvite(){
   const url=genericUrl();
-  try{if(navigator.share){await navigator.share({title:'Thiệp cưới Minh & Thuỷ',text:'Trân trọng kính mời quý khách đến chung vui ngày 24.12.2026',url});return}}
-  catch(e){if(e.name==='AbortError')return}
-  if(await copyText(url))toast('Đã sao chép đường dẫn thiệp cưới.');else toast('Hãy sao chép liên kết trên thanh địa chỉ để chia sẻ.');
+  const text=`Thiệp cưới Minh & Thuỷ, 11:00 Thứ Năm 24.12.2026 tại Seasons Hanoi\n${url}`;
+  // Opens the phone's share sheet directly (Zalo, Messenger...). The link sits inside the text
+  // so Zalo receives the message and builds the photo preview from it.
+  if(navigator.share){
+    try{await navigator.share({text});return}
+    catch(e){if(e.name==='AbortError')return}
+  }
+  const copied=await copyText(url);
+  if(/zalo/i.test(navigator.userAgent))toast('Bấm dấu ⋯ ở góc trên bên phải, chọn Chia sẻ để gửi thiệp qua Zalo.');
+  else toast(copied?'Đã sao chép đường dẫn thiệp. Mở Zalo và dán để gửi.':'Hãy sao chép liên kết trên thanh địa chỉ để chia sẻ.');
 }
 async function copyText(text){
   try{await navigator.clipboard.writeText(text);return true}catch(_){}
